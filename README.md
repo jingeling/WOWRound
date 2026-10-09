@@ -11,7 +11,7 @@ Gebouwd voor eigen gebruik, niet als commercieel product.
 - **Vaste ruimtes.** Eén ruimte per persoon met wie je samenwerkt, met een vaste gastlink. Gasten installeren niets en hebben geen account nodig.
 - **Standaard dicht.** Alleen jij kunt een ruimte openen. Gasten wachten in een wachtruimte tot jij ze binnenlaat. Klopt er iemand aan, dan klinkt er een deurbel, ook als het tabblad op de achtergrond staat.
 
-De ontwerpprincipes en hoe elk principe in de code terugkomt staan in [docs/PRINCIPES.md](docs/PRINCIPES.md). Het beveiligingsmodel staat in [docs/BEVEILIGING.md](docs/BEVEILIGING.md).
+De ontwerpprincipes en hoe elk principe in de code terugkomt staan in [docs/PRINCIPES.md](docs/PRINCIPES.md). Het beveiligingsmodel staat in [docs/BEVEILIGING.md](docs/BEVEILIGING.md). Welke keuzes er zijn gemaakt en waarom, staat in [docs/KEUZES.md](docs/KEUZES.md).
 
 ## Lokaal uitproberen
 
