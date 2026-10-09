@@ -1,0 +1,13 @@
+# Caddy regelt automatisch een Let's Encrypt-certificaat en stuurt verkeer door naar WOWRound.
+# Vervang bel.jouwdomein.nl door je eigen (sub)domein.
+
+bel.jouwdomein.nl {
+	encode zstd gzip
+
+	# Geen toegangslogs: wie wanneer belt, hoeft nergens bewaard te worden (principe 14).
+	log {
+		output discard
+	}
+
+	reverse_proxy 127.0.0.1:3000
+}

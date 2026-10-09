@@ -1,0 +1,41 @@
+# systemd-service voor WOWRound.
+# Installeren:
+#   sudo cp deploy/wowround.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now wowround
+
+[Unit]
+Description=WOWRound 1-op-1 video
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=wowround
+Group=wowround
+WorkingDirectory=/opt/wowround
+EnvironmentFile=/opt/wowround/.env
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node server/index.js
+Restart=on-failure
+RestartSec=3
+
+# Afscherming: de service mag zo min mogelijk.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/wowround/data
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=false
+SystemCallArchitectures=native
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+[Install]
+WantedBy=multi-user.target

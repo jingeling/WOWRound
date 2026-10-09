@@ -1,0 +1,63 @@
+# Optionele coturn-configuratie voor WOWRound.
+# Gebaseerd op de richtlijnen van Enable Security (2026), zie docs/BEVEILIGING.md.
+# Gebruik coturn 4.9.0 of nieuwer (oplossing voor CVE-2026-27624).
+#
+# Draai dit bij voorkeur op een APARTE server, niet naast WOWRound.
+
+listening-port=3478
+tls-listening-port=5349
+listening-ip=JOUW_PUBLIEKE_IP
+relay-ip=JOUW_PUBLIEKE_IP
+external-ip=JOUW_PUBLIEKE_IP
+realm=turn.jouwdomein.nl
+
+# Kortlevende inloggegevens: WOWRound maakt ze aan met hetzelfde geheim.
+use-auth-secret
+static-auth-secret=ZELFDE_WAARDE_ALS_TURN_SECRET
+
+# Certificaat voor turns:// (bijvoorbeeld van certbot).
+cert=/etc/letsencrypt/live/turn.jouwdomein.nl/fullchain.pem
+pkey=/etc/letsencrypt/live/turn.jouwdomein.nl/privkey.pem
+no-tlsv1
+no-tlsv1_1
+
+# Relay-poorten (open deze in je firewall).
+min-port=49160
+max-port=49200
+
+# ——— Relay-misbruik voorkomen: nooit doorsturen naar interne netwerken ———
+no-multicast-peers
+no-loopback-peers
+denied-peer-ip=0.0.0.0-0.255.255.255
+denied-peer-ip=10.0.0.0-10.255.255.255
+denied-peer-ip=100.64.0.0-100.127.255.255
+denied-peer-ip=127.0.0.0-127.255.255.255
+denied-peer-ip=169.254.0.0-169.254.255.255
+denied-peer-ip=172.16.0.0-172.31.255.255
+denied-peer-ip=192.0.0.0-192.0.0.255
+denied-peer-ip=192.168.0.0-192.168.255.255
+denied-peer-ip=198.18.0.0-198.19.255.255
+denied-peer-ip=224.0.0.0-255.255.255.255
+denied-peer-ip=::1
+denied-peer-ip=fc00::-fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+denied-peer-ip=fe80::-febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+# IPv4-in-IPv6-adressen blokkeren: zo kan niemand de regels hierboven omzeilen
+# (de truc achter CVE-2026-27624 in oudere coturn-versies).
+denied-peer-ip=::ffff:0.0.0.0-::ffff:255.255.255.255
+
+# WebRTC gebruikt UDP; TCP-relay naar willekeurige adressen is niet nodig.
+no-tcp-relay
+
+# Grenzen per gebruiker en totaal.
+user-quota=4
+total-quota=20
+max-bps=8000000
+
+# Geen beheerinterface, geen CLI.
+no-cli
+no-web-admin
+
+# Zo min mogelijk loggen.
+no-stdout-log
+log-file=/var/log/turnserver/turnserver.log
+simple-log

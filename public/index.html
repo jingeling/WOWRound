@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Ruimtes · WOWRound</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script type="module" src="/assets/js/dashboard.js"></script>
+</head>
+<body>
+  <div class="dash">
+    <header>
+      <span class="wordmark">WOWRound</span>
+      <button class="btn btn-quiet" id="logout" type="button">Uitloggen</button>
+    </header>
+
+    <main>
+      <h1>Je ruimtes</h1>
+      <p class="lede">Eén vaste ruimte per persoon met wie je samenwerkt. Stuur de gastlink één keer; daarna is samenzitten één klik.</p>
+
+      <form class="create" id="create-form">
+        <input class="input" id="room-name" name="name" maxlength="60" placeholder="Bijvoorbeeld: Pairen met Sam" autocomplete="off" aria-label="Naam van de nieuwe ruimte">
+        <button class="btn btn-primary" type="submit">Ruimte maken</button>
+      </form>
+
+      <ul class="rooms" id="rooms" aria-live="polite"></ul>
+      <p class="empty" id="empty" hidden>Nog geen ruimtes. Geef je eerste ruimte hierboven een naam.</p>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" hidden></div>
+</body>
+</html>

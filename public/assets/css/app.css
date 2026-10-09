@@ -1,0 +1,277 @@
+/* WOWRound — één stylesheet, geen externe bronnen.
+   Het opvallende element is de bubbel; de rest blijft stil. */
+
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('../fonts/instrument-sans.woff2') format('woff2');
+  font-weight: 400 700;
+  font-stretch: 75% 100%;
+  font-display: swap;
+}
+
+:root {
+  --ink: #1d2430;
+  --ink-soft: #4b5667;
+  --desk: #e6ebf0;
+  --paper: #ffffff;
+  --line: #c9d2dc;
+  --teal: #0f8a78;
+  --teal-ink: #ffffff;
+  --marigold: #e9a01b;
+  --alarm: #c2382e;
+  --stage: #1f2631;
+  --stage-raised: #2b3442;
+  --stage-ink: #e9eef4;
+  --stage-soft: #9aa6b5;
+  --focus: #e9a01b;
+
+  --r-small: 8px;
+  --r-pill: 999px;
+  --step--1: 0.875rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.75rem;
+  --step-3: 2.5rem;
+
+  color-scheme: light dark;
+  font-family: 'Instrument Sans', system-ui, sans-serif;
+  font-size: 100%;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--desk);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e9eef4;
+    --ink-soft: #a3afbe;
+    --desk: #1f2631;
+    --paper: #2b3442;
+    --line: #3d4858;
+  }
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: var(--desk); }
+[hidden] { display: none !important; }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+button, input, select { font: inherit; color: inherit; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  min-height: 2.75rem; padding: 0 1.25rem;
+  border: 1px solid var(--line); border-radius: var(--r-pill);
+  background: var(--paper); cursor: pointer; font-weight: 600; text-decoration: none;
+}
+.btn:hover { border-color: var(--ink-soft); }
+.btn-primary { background: var(--teal); border-color: var(--teal); color: var(--teal-ink); }
+.btn-primary:hover { filter: brightness(1.08); border-color: var(--teal); }
+.btn-quiet { background: transparent; border-color: transparent; color: var(--ink-soft); }
+.btn-quiet:hover { color: var(--ink); border-color: transparent; text-decoration: underline; }
+.btn-danger { color: var(--alarm); }
+.btn:disabled { opacity: 0.5; cursor: default; }
+
+.field { display: grid; gap: 0.375rem; }
+.field label { font-weight: 600; font-size: var(--step--1); }
+.input {
+  min-height: 2.75rem; padding: 0 0.875rem;
+  border: 1px solid var(--line); border-radius: var(--r-small);
+  background: var(--paper);
+}
+.input:focus-visible { outline-offset: 0; }
+
+.wordmark {
+  font-weight: 700; font-stretch: 78%; letter-spacing: -0.01em;
+  font-size: var(--step-1); text-decoration: none; color: inherit;
+}
+
+.error-text { color: var(--alarm); min-height: 1.5em; margin: 0; }
+
+/* ——— Inloggen ——— */
+
+.login {
+  min-height: 100vh; display: grid; place-items: center; padding: 1.5rem;
+}
+.login form { width: min(22rem, 100%); display: grid; gap: 1.25rem; }
+.login .mark { display: flex; align-items: center; gap: 0.75rem; }
+.login .mark .dot { width: 2.25rem; height: 2.25rem; border-radius: 50%; background: var(--teal); }
+.login .mark .dot + .dot { margin-left: -1.25rem; background: var(--marigold); mix-blend-mode: multiply; }
+@media (prefers-color-scheme: dark) { .login .mark .dot + .dot { mix-blend-mode: screen; } }
+
+/* ——— Overzicht van ruimtes ——— */
+
+.dash { max-width: 46rem; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+.dash header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
+.dash h1 { font-size: var(--step-3); font-stretch: 80%; line-height: 1.1; margin: 0 0 0.5rem; letter-spacing: -0.02em; }
+.dash .lede { color: var(--ink-soft); margin: 0 0 2rem; max-width: 34rem; }
+
+.create { display: flex; gap: 0.5rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
+.create .input { flex: 1 1 14rem; }
+
+.rooms { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.room-row {
+  display: grid; grid-template-columns: 1fr auto; gap: 0.75rem 1rem; align-items: center;
+  padding: 1.25rem 0; border-bottom: 1px solid var(--line);
+}
+.room-row h2 { font-size: var(--step-1); margin: 0; font-weight: 600; }
+.room-row .meta { color: var(--ink-soft); font-size: var(--step--1); margin: 0.125rem 0 0; }
+.room-row .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end; }
+.room-row .more { grid-column: 1 / -1; display: flex; gap: 0.25rem; flex-wrap: wrap; margin-left: -0.75rem; }
+.room-row .more .btn { padding: 0 0.75rem; min-height: 2.25rem; }
+.empty { color: var(--ink-soft); padding: 2rem 0; }
+@media (max-width: 34rem) {
+  .room-row { grid-template-columns: 1fr; }
+  .room-row .actions { justify-content: flex-start; }
+}
+
+.toast {
+  position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%);
+  background: var(--ink); color: var(--desk); padding: 0.625rem 1.125rem;
+  border-radius: var(--r-pill); font-weight: 600; z-index: 50;
+}
+
+/* ——— Ruimte ——— */
+
+.room-page {
+  --ink: var(--stage-ink); --ink-soft: var(--stage-soft);
+  --paper: var(--stage-raised); --line: #3d4858;
+  background: var(--stage); color: var(--stage-ink);
+  height: 100vh; overflow: hidden;
+}
+
+.stage { position: fixed; inset: 0; }
+
+.topline {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.75rem 1rem; pointer-events: none;
+}
+.topline > * { pointer-events: auto; }
+.topline .room-name { color: var(--stage-soft); font-weight: 600; }
+.status { color: var(--stage-soft); font-size: var(--step--1); }
+
+/* Vooraf: naam en camera checken */
+.prejoin {
+  position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 1.5rem;
+  background: var(--stage);
+}
+.prejoin-card { width: min(24rem, 100%); display: grid; gap: 1.25rem; justify-items: center; text-align: center; }
+.prejoin-card h1 { font-size: var(--step-2); font-stretch: 82%; margin: 0; line-height: 1.15; }
+.prejoin-card p { margin: 0; color: var(--stage-soft); }
+.prejoin-card form { display: grid; gap: 1rem; width: 100%; text-align: left; }
+.prejoin .preview { position: relative; width: 11rem; height: 11rem; }
+.prejoin .preview .bubble { position: absolute; inset: 0; width: 100%; height: 100%; }
+.prejoin-toggles { display: flex; gap: 0.5rem; justify-content: center; }
+
+/* Het gedeelde scherm */
+.screen-wrap { position: absolute; inset: 0; display: grid; place-items: center; }
+.screen-wrap video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+.annotate { position: absolute; pointer-events: none; }
+.annotate.drawing { pointer-events: auto; cursor: crosshair; }
+.stage.sharing .idle { display: none; }
+
+/* Rust als er niets gedeeld wordt */
+.idle {
+  position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 2rem;
+  color: var(--stage-soft);
+}
+.idle p { max-width: 26rem; margin: 15rem 0 0; }
+
+/* De bubbels */
+.bubbles { position: absolute; inset: 0; pointer-events: none; z-index: 10; }
+.bubble {
+  --size: 9rem;
+  position: absolute; left: 0; top: 0; width: var(--size); height: var(--size);
+  border-radius: 50%; overflow: visible; pointer-events: auto;
+  touch-action: none; user-select: none; cursor: grab;
+  transition: width 0.2s ease, height 0.2s ease;
+}
+.bubble.dragging { cursor: grabbing; transition: none; }
+.bubble.big { --size: 13rem; }
+.stage.sharing .bubble { --size: 6.5rem; }
+.stage.sharing .bubble.big { --size: 10rem; }
+.bubble .face {
+  position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
+  background: var(--stage-raised);
+  box-shadow: 0 0 0 3px var(--stage), 0 10px 30px rgba(5, 10, 20, 0.45);
+  transition: box-shadow 0.15s ease;
+}
+.bubble.speaking .face { box-shadow: 0 0 0 3px var(--teal), 0 10px 30px rgba(5, 10, 20, 0.45); }
+.bubble video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bubble.mirror video { transform: scaleX(-1); }
+.bubble .initials {
+  position: absolute; inset: 0; display: none; place-items: center;
+  font-weight: 700; font-stretch: 80%; font-size: calc(var(--size) / 3); color: var(--stage-soft);
+}
+.bubble.cam-off video { visibility: hidden; }
+.bubble.cam-off .initials { display: grid; }
+.bubble .name {
+  position: absolute; left: 50%; bottom: -0.5rem; transform: translateX(-50%);
+  background: var(--stage); color: var(--stage-ink); white-space: nowrap;
+  padding: 0.125rem 0.625rem; border-radius: var(--r-pill); font-size: 0.8125rem; font-weight: 600;
+  max-width: 12rem; overflow: hidden; text-overflow: ellipsis;
+}
+.bubble .muted-icon {
+  position: absolute; top: 0.25rem; right: 0.25rem; width: 1.75rem; height: 1.75rem;
+  border-radius: 50%; background: var(--alarm); display: none; place-items: center;
+}
+.bubble.mic-off .muted-icon { display: grid; }
+.bubble .muted-icon svg { width: 1rem; height: 1rem; }
+.bubble.waiting .face { opacity: 0.45; }
+
+/* Bedieningsbalk */
+.controls {
+  position: fixed; left: 50%; bottom: 1.25rem; transform: translateX(-50%); z-index: 25;
+  display: flex; gap: 0.375rem; padding: 0.375rem;
+  background: rgba(31, 38, 49, 0.92); border: 1px solid #3d4858; border-radius: var(--r-pill);
+  backdrop-filter: blur(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.controls.faded { opacity: 0; transform: translate(-50%, 0.5rem); pointer-events: none; }
+.ctl {
+  width: 3rem; height: 3rem; border-radius: 50%; border: 0; display: grid; place-items: center;
+  background: transparent; color: var(--stage-ink); cursor: pointer;
+}
+.ctl:hover { background: var(--stage-raised); }
+.ctl svg { width: 1.375rem; height: 1.375rem; }
+.ctl[aria-pressed='false'].toggle-off-bad { background: var(--alarm); color: #fff; }
+.ctl[aria-pressed='true'].toggle-on-good { background: var(--teal); color: #fff; }
+.ctl.hangup { background: var(--alarm); color: #fff; width: 3.75rem; border-radius: var(--r-pill); }
+.ctl.hangup:hover { filter: brightness(1.1); }
+.ctl-sep { width: 1px; background: #3d4858; margin: 0.5rem 0.125rem; }
+
+/* Menu en wachtruimte */
+.panel {
+  position: fixed; z-index: 40; background: var(--stage-raised); color: var(--stage-ink);
+  border: 1px solid #3d4858; border-radius: 14px; padding: 1rem;
+  box-shadow: 0 16px 40px rgba(5, 10, 20, 0.5);
+}
+.menu { bottom: 5.5rem; left: 50%; transform: translateX(-50%); width: min(20rem, calc(100vw - 2rem)); display: grid; gap: 0.875rem; }
+.menu .input { width: 100%; }
+.knock { top: 1rem; left: 50%; transform: translateX(-50%); width: min(32rem, calc(100vw - 2rem)); display: grid; gap: 0.75rem; }
+.knock-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.knock-row strong { flex: 1 1 10rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.ended {
+  position: fixed; inset: 0; z-index: 45; display: grid; place-items: center; text-align: center;
+  background: var(--stage); padding: 1.5rem;
+}
+.ended > div { display: grid; gap: 1rem; justify-items: center; }
+.ended h1 { font-size: var(--step-2); font-stretch: 82%; margin: 0; }
+.ended p { margin: 0; color: var(--stage-soft); max-width: 26rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.room-page .toast { background: var(--stage-ink); color: var(--stage); bottom: auto; top: 3.5rem; }
+
+@media (max-width: 40rem) {
+  .bubble { --size: 6.5rem; }
+  .bubble.big { --size: 9rem; }
+  .stage.sharing .bubble { --size: 4.5rem; }
+  .ctl { width: 2.75rem; height: 2.75rem; }
+  .idle p { margin-top: 11rem; }
+}
