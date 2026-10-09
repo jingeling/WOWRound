@@ -2,6 +2,7 @@
 
 import { Annotator } from './annotate.js';
 import { Bubble } from './bubbles.js';
+import { primeDoorbell, ringDoorbell } from './doorbell.js';
 import { Peer } from './peer.js';
 import { Signal } from './signal.js';
 import { $, api, copyText, el, store, toast } from './ui.js';
@@ -489,7 +490,7 @@ function onWaiting(reason) {
 
 function renderLobby(guests) {
   const panel = $('#knock');
-  if (guests.length > state.lobbyCount) knockSound();
+  if (guests.length > state.lobbyCount) ringDoorbell();
   state.lobbyCount = guests.length;
   updateTitle();
   panel.replaceChildren(
@@ -517,24 +518,6 @@ function renderLobby(guests) {
     panel.append(el('p', { class: 'status', text: `Binnenlaten vervangt ${state.peerName || 'je huidige gast'}.` }));
   }
   panel.hidden = guests.length === 0;
-}
-
-function knockSound() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.frequency.value = 660;
-    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.15, ctx.currentTime + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
-    osc.connect(gain).connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.4);
-    osc.onended = () => ctx.close();
-  } catch {
-    /* geen geluid mogelijk */
-  }
 }
 
 // ——— Bediening ———
@@ -706,6 +689,7 @@ async function init() {
     store.set('name', state.name);
     $('#prejoin-error').textContent = '';
     submit.disabled = true;
+    if (state.role === 'owner') primeDoorbell();
     connectSignal();
   });
 

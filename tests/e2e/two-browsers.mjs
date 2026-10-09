@@ -82,6 +82,15 @@ async function main() {
     const ownerCtx = await browser.newContext({ viewport: { width: 1280, height: 800 }, permissions: ['camera', 'microphone', 'clipboard-read', 'clipboard-write'] });
     const guestCtx = await browser.newContext({ viewport: { width: 1100, height: 760 }, permissions: ['camera', 'microphone'] });
     await ownerCtx.addInitScript(fakeDisplay);
+    // Tel gestarte tonen, zodat we kunnen controleren dat de deurbel klinkt.
+    await ownerCtx.addInitScript(() => {
+      window.__tones = 0;
+      const start = OscillatorNode.prototype.start;
+      OscillatorNode.prototype.start = function (...args) {
+        window.__tones++;
+        return start.apply(this, args);
+      };
+    });
     await guestCtx.addInitScript(fakeDisplay);
     const owner = await ownerCtx.newPage();
     const guest = await guestCtx.newPage();
@@ -120,6 +129,8 @@ async function main() {
     await guest.click('#prejoin-submit');
     await guest.waitForSelector('#prejoin-title:text("Even wachten")');
     await owner.waitForSelector('#knock:not([hidden]) .knock-row');
+    await owner.waitForFunction(() => window.__tones >= 8, null, { timeout: 3000 });
+    step('deurbel klinkt bij de eigenaar');
     await shot(owner, '04-aankloppen');
     step('gast staat in de wachtruimte, eigenaar ziet het');
 

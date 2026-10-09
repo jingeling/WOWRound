@@ -9,7 +9,7 @@ Gebouwd voor eigen gebruik, niet als commercieel product.
 - **Scherp schermdelen.** Een venster delen is de standaard. De verbinding kiest voor scherpe tekst boven vloeiende beweging.
 - **Samen aanwijzen.** Beweeg over het gedeelde scherm en de ander ziet je aanwijzer met je naam. Klik voor een pulserende markering, of druk op D om te tekenen. Lijnen vervagen na vier seconden.
 - **Vaste ruimtes.** Eén ruimte per persoon met wie je samenwerkt, met een vaste gastlink. Gasten installeren niets en hebben geen account nodig.
-- **Standaard dicht.** Alleen jij kunt een ruimte openen. Gasten wachten in een wachtruimte tot jij ze binnenlaat.
+- **Standaard dicht.** Alleen jij kunt een ruimte openen. Gasten wachten in een wachtruimte tot jij ze binnenlaat. Klopt er iemand aan, dan klinkt er een deurbel, ook als het tabblad op de achtergrond staat.
 
 De ontwerpprincipes en hoe elk principe in de code terugkomt staan in [docs/PRINCIPES.md](docs/PRINCIPES.md). Het beveiligingsmodel staat in [docs/BEVEILIGING.md](docs/BEVEILIGING.md).
 
