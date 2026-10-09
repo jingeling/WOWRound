@@ -83,6 +83,12 @@ $('#create-form').addEventListener('submit', async (event) => {
   toast((await copyText(room.guestUrl)) ? 'Ruimte gemaakt, gastlink gekopieerd' : 'Ruimte gemaakt');
 });
 
+$('#logout-all').addEventListener('click', async () => {
+  if (!confirm('Je wordt uitgelogd op al je apparaten, ook hier. Doorgaan?')) return;
+  await api('POST', '/api/logout-all');
+  location.href = '/login';
+});
+
 $('#logout').addEventListener('click', async () => {
   await api('POST', '/api/logout');
   location.href = '/login';

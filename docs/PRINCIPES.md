@@ -50,7 +50,7 @@ Alleen de ingelogde eigenaar kan een ruimte openen. Gasten met een geldige link 
 → `handleJoin()` en `handleSignal()` in `server/signaling.js`
 
 **12. Kortlevende toegang.**
-Sessies leven in het geheugen en verlopen na 12 uur (instelbaar). Een herstart logt iedereen uit. Gastlinks zijn te vervangen met één klik; de oude werkt dan direct niet meer en wie binnen is, wordt eruit gezet. TURN-inloggegevens verlopen na een uur. Geheimen staan in `.env`, nooit in de code.
+Sessies leven in het geheugen en verlopen na 7 dagen (instelbaar). Dat is een bewuste keuze voor gemak; als tegenwicht logt "Overal uitloggen" direct alle apparaten uit, en een herstart doet hetzelfde. Gastlinks zijn te vervangen met één klik; de oude werkt dan direct niet meer en wie binnen is, wordt eruit gezet. TURN-inloggegevens verlopen na een uur. Geheimen staan in `.env`, nooit in de code.
 → `server/auth.js`, `rotateKey()` in `server/rooms.js`, `server/ice.js`
 
 **13. Houd je aanvalsoppervlak klein.**

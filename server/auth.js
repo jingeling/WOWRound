@@ -62,6 +62,11 @@ export class SessionStore {
     this.sessions.delete(id);
   }
 
+  // Iedereen uitloggen, op alle apparaten.
+  clear() {
+    this.sessions.clear();
+  }
+
   sweep() {
     const now = Date.now();
     for (const [id, s] of this.sessions) if (s.expiresAt < now) this.sessions.delete(id);

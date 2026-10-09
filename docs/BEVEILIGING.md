@@ -23,7 +23,7 @@ Eén kanttekening: de vingerafdrukken van de versleuteling worden uitgewisseld v
 **Toegang**
 - Eén eigenaar met een wachtwoord, gehasht met scrypt (N=2¹⁵). Vergelijking in constante tijd.
 - Maximaal 5 inlogpogingen per IP-adres per kwartier. Mislukte pogingen worden gelogd.
-- Sessiecookie: willekeurig (256 bit), `HttpOnly`, `SameSite=Strict`, `Secure` en het voorvoegsel `__Host-` bij https. Verloopt na 12 uur. Sessies staan alleen in het geheugen.
+- Sessiecookie: willekeurig (256 bit), `HttpOnly`, `SameSite=Strict`, `Secure` en het voorvoegsel `__Host-` bij https. Verloopt na 7 dagen (instelbaar). Sessies staan alleen in het geheugen. Met "Overal uitloggen" vervallen alle sessies direct, bijvoorbeeld als je laptop kwijt is.
 - Gastlinks zijn HMAC-SHA256-handtekeningen van ruimte en versie (192 bit). Ze worden niet opgeslagen maar nagerekend. Een nieuwe link maken trekt de oude direct in en zet wie binnen is eruit.
 - De sleutel staat in de link achter het `#`. Browsers sturen dat deel niet naar de server, dus het komt niet in logs van proxies.
 - Gasten komen in een wachtruimte (maximaal 5 wachtenden). Alleen de eigenaar laat binnen. Signalen van niet-toegelaten gasten worden genegeerd.

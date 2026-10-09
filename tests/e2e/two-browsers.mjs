@@ -82,6 +82,27 @@ async function main() {
     const ownerCtx = await browser.newContext({ viewport: { width: 1280, height: 800 }, permissions: ['camera', 'microphone', 'clipboard-read', 'clipboard-write'] });
     const guestCtx = await browser.newContext({ viewport: { width: 1100, height: 760 }, permissions: ['camera', 'microphone'] });
     await ownerCtx.addInitScript(fakeDisplay);
+    for (const ctx of [ownerCtx, guestCtx]) {
+      // Verbindingen bijhouden voor foutdiagnose.
+      await ctx.addInitScript(() => {
+        window.__pcs = [];
+        window.__pclog = [];
+        const Orig = window.RTCPeerConnection;
+        window.RTCPeerConnection = function (...args) {
+          const pc = new Orig(...args);
+          const id = window.__pcs.push(pc);
+          const log = (what) => window.__pclog.push(`${id} ${what} sig=${pc.signalingState} ice=${pc.iceConnectionState} conn=${pc.connectionState}`);
+          for (const ev of ['signalingstatechange', 'iceconnectionstatechange', 'connectionstatechange', 'icegatheringstatechange']) pc.addEventListener(ev, () => log(ev));
+          pc.addEventListener('icecandidate', (e) => log(`cand ${e.candidate ? e.candidate.candidate.split(' ').slice(4, 8).join(' ') : 'end'}`));
+          for (const m of ['setLocalDescription', 'setRemoteDescription', 'addIceCandidate']) {
+            const orig = pc[m].bind(pc);
+            pc[m] = (...a) => { log(`${m}(${a[0]?.type || (a[0]?.candidate ? 'cand' : '')})`); return orig(...a).catch((err) => { log(`${m} FOUT ${err.message}`); throw err; }); };
+          }
+          return pc;
+        };
+        window.RTCPeerConnection.prototype = Orig.prototype;
+      });
+    }
     // Tel gestarte tonen, zodat we kunnen controleren dat de deurbel klinkt.
     await ownerCtx.addInitScript(() => {
       window.__tones = 0;
@@ -145,6 +166,7 @@ async function main() {
       }, null, { timeout: 15000 });
     await Promise.all([remoteVideoPlaying(owner), remoteVideoPlaying(guest)]).catch(async (err) => {
       for (const [p, who] of [[owner, 'eigenaar'], [guest, 'gast']]) {
+        console.error(`  [${who}] pc-log:\n    ` + (await p.evaluate(() => window.__pclog.join('\n    '))));
         console.error(`  [${who}] status: "${await p.textContent('#status')}", bubbels:`, await p.evaluate(() =>
           [...document.querySelectorAll('.bubble video')].map((v) => ({ muted: v.muted, ready: v.readyState, w: v.videoWidth, tracks: v.srcObject?.getTracks().map((t) => `${t.kind}:${t.readyState}:${t.muted ? 'muted' : 'live'}`) }))));
       }

@@ -150,6 +150,14 @@ export function createApp(config, { log = console } = {}) {
     // Alles hieronder is alleen voor de eigenaar.
     if (!isOwnerRequest(req)) return respond(res, 401, { error: 'Niet ingelogd.' });
 
+    if (url.pathname === '/api/logout-all' && method === 'POST') {
+      sessions.clear();
+      log.warn('Overal uitgelogd op verzoek van de eigenaar');
+      return respond(res, 200, { ok: true }, {
+        'Set-Cookie': sessionCookie(cookieName, '', { secure: config.secureCookies, maxAgeSeconds: 0 }),
+      });
+    }
+
     if (url.pathname === '/api/rooms') {
       if (method === 'GET') return respond(res, 200, { rooms: rooms.list().map(roomView) });
       if (method === 'POST') {

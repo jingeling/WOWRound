@@ -176,3 +176,18 @@ describe('signalering en wachtruimte', () => {
     ws.close();
   });
 });
+
+describe('overal uitloggen', () => {
+  // Eigen server: de server hierboven heeft na de test met foute wachtwoorden een inlogblokkade.
+  test('maakt alle sessies ongeldig, ook op andere apparaten', async () => {
+    const own = await startServer();
+    const laptop = (await login(own)).cookie;
+    const telefoon = (await login(own)).cookie;
+    assert.equal((await api(own, telefoon, 'GET', '/api/rooms')).status, 200);
+    assert.equal((await api(own, laptop, 'POST', '/api/logout-all')).status, 200);
+    assert.equal((await api(own, telefoon, 'GET', '/api/rooms')).status, 401);
+    assert.equal((await api(own, laptop, 'GET', '/api/rooms')).status, 401);
+    assert.equal((await api(own, null, 'POST', '/api/logout-all')).status, 401, 'zonder sessie niet toegestaan');
+    await own.stop();
+  });
+});

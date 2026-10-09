@@ -55,7 +55,7 @@ export function loadConfig() {
     secureCookies: publicUrl.protocol === 'https:',
     trustProxy: env.TRUST_PROXY === 'true',
     appSecret,
-    sessionTtlMs: Number(env.SESSION_TTL_HOURS || 12) * 3600_000,
+    sessionTtlMs: Number(env.SESSION_TTL_HOURS || 168) * 3600_000,
     ownerPasswordHash,
     dataDir: path.resolve(env.DATA_DIR || './data'),
     stunUrls: list('STUN_URLS', ['stun:stun.nextcloud.com:443']),

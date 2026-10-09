@@ -5,7 +5,10 @@
 // status is ook rechtstreeks en versleuteld (DTLS). De server ziet niets hiervan.
 //
 // Onderhandelen gebeurt volgens het "perfect negotiation"-patroon, zodat het
-// niet uitmaakt wie als eerste iets verandert.
+// niet uitmaakt wie later als eerste iets verandert. Het allereerste voorstel
+// komt altijd van de eigenaar: de gast wacht daarop en hangt zijn camera en
+// microfoon pas daarna aan de verbinding. Zo botsen de openingsvoorstellen nooit;
+// zo'n botsing liet in tests af en toe een verbinding hangen.
 
 const CAMERA_BITRATE = 450_000;
 const SCREEN_BITRATE = 6_000_000;
@@ -20,6 +23,9 @@ export class Peer extends EventTarget {
     this.senders = { audio: null, camera: null, screen: null };
     this.remoteStreams = new Map();
     this.closed = false;
+    // De eigenaar (niet beleefd) opent; de gast wacht op het eerste voorstel.
+    this.opened = !polite;
+    this.pending = [];
 
     this.pc = new RTCPeerConnection({ iceServers, bundlePolicy: 'max-bundle', rtcpMuxPolicy: 'require' });
 
@@ -37,6 +43,7 @@ export class Peer extends EventTarget {
     });
 
     this.pc.addEventListener('negotiationneeded', async () => {
+      if (!this.opened) return; // gast: eerst het voorstel van de eigenaar afwachten
       try {
         this.makingOffer = true;
         await this.pc.setLocalDescription();
@@ -75,6 +82,12 @@ export class Peer extends EventTarget {
         this.ignoreOffer = !this.polite && collision;
         if (this.ignoreOffer) return;
         await this.pc.setRemoteDescription(description);
+        if (description.type === 'offer' && !this.opened) {
+          // Eerste voorstel binnen: nu pas eigen tracks toevoegen, zodat ze
+          // meteen in het antwoord meegaan.
+          this.opened = true;
+          for (const fn of this.pending.splice(0)) fn();
+        }
         if (description.type === 'offer') {
           await this.pc.setLocalDescription();
           this.sendSignal({ description: this.pc.localDescription });
@@ -98,6 +111,7 @@ export class Peer extends EventTarget {
   // Camera en microfoon toevoegen. De stream-ID reist mee, zodat de andere kant
   // camera en scherm uit elkaar kan houden.
   addCamera(stream) {
+    if (!this.opened) return void this.pending.push(() => this.addCamera(stream));
     const audio = stream.getAudioTracks()[0];
     const video = stream.getVideoTracks()[0];
     if (audio) this.senders.audio = this.pc.addTrack(audio, stream);
@@ -124,7 +138,9 @@ export class Peer extends EventTarget {
 
   // Schermdelen: scherpte gaat voor vloeiendheid (principe 6).
   addScreen(stream) {
+    if (!this.opened) return void this.pending.push(() => this.addScreen(stream));
     const track = stream.getVideoTracks()[0];
+    if (!track || track.readyState === 'ended') return; // al gestopt voordat de verbinding er was
     this.senders.screen = this.pc.addTrack(track, stream);
     const transceiver = this.pc.getTransceivers().find((t) => t.sender === this.senders.screen);
     preferCodecs(transceiver, ['video/VP9', 'video/AV1', 'video/H264', 'video/VP8']);
